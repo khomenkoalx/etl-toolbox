@@ -1,0 +1,25 @@
+name: Run Validator on Remote VM
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-on-vm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run command on remote VM via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          password: ${{ secrets.VM_PASSWORD }}
+          port: 22
+          script: |
+            echo "🔍 Running validator..."
+            echo "${{ secrets.VM_PASSWORD }}" | sudo -S docker run --pull always --rm \
+              -v "/riapanda.spb/Share/Custom/Аналитика рабочая/airflow/rnc//app/data" \
+              visanalytics/rnc-validator
+            echo "✅ Done."

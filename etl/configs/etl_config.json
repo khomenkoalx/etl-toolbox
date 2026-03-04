@@ -1,0 +1,492 @@
+{
+  "ЗАКУПКИ": {
+    "output_file_name": "ЗАКУПКИ",
+    
+    "column_mapping": {
+      "period_ish_vis_ru": "operation_date",
+      "net_id_vis_vis_ru": "id_client",
+      "aptid_vis_ru": "id_pharmacy",
+      "apt_inn_vis_ru": "tin_pharmacy",
+      "tms_id_vis_ru": "id_sku",
+      "distrib_code_vis_ru": "id_client_supplier",
+      "distrib_filial_code_vis_ru": "id_branch",
+      "sum_amount_e": "quantity"
+    },
+        
+    "additional_columns_for_error_report": [
+      "srcfile1_vis_ru",
+      "tms_ish_vis_ru", 
+      "distrib_vis_ru",
+      "aptadress_ish_vis_ru",
+      "apt_inn_ish_vis_ru"
+    ],
+    
+    "transformation_rules": [
+      {
+        "transformer": "set_to_minus_one",
+        "input_columns": ["id_branch"],
+        "output_column": "id_branch"
+      },
+      {
+        "transformer": "unrecognized_to_10003",
+        "input_columns": ["id_client_supplier"],
+        "output_column": "id_client_supplier"
+      },
+      {
+        "transformer": "coalesce_tin",
+        "input_columns": ["tin_pharmacy", "apt_inn_ish_vis_ru"],
+        "output_column": "tin_pharmacy"
+      },
+      {
+        "transformer": "get_id_pharmacy_for_not_russian_network",
+        "input_columns": ["aptadress_ish_vis_ru", "id_client"],
+        "output_column": "id_pharmacy"
+      }
+    ],
+    
+    "validation_rules": [
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_sku"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "tin_pharmacy"
+      },
+      {
+        "validator": "validate_not_numeric",
+        "column": "id_sku"
+      }
+    ]
+  },
+  "ПРОДАЖИ": {
+    "output_file_name": "ПРОДАЖИ",
+    
+    "column_mapping": {
+      "period_ish_vis_ru": "operation_date",
+      "net_id_vis_vis_ru": "id_client",
+      "aptid_vis_ru": "id_pharmacy",
+      "apt_inn_vis_ru": "tin_pharmacy",
+      "tms_id_vis_ru": "id_sku",
+      "marketa_vis_ru": "order_num",
+      "distrib_filial_code_vis_ru": "id_branch",
+      "type_function_vis_ru": "out_price",
+      "sum_amount_e": "quantity",
+      "distrib_vis_ru": "id_operation_type"
+    },
+        
+    "additional_columns_for_error_report": [
+      "srcfile1_vis_ru",
+      "tms_ish_vis_ru",
+      "distrib_vis_ru",
+      "aptadress_ish_vis_ru"
+    ],
+    
+    "transformation_rules": [
+      {
+        "transformer": "set_to_minus_one",
+        "input_columns": ["id_branch"],
+        "output_column": "id_branch"
+      },
+      {
+        "transformer": "set_to_minus_one",
+        "input_columns": ["order_num"],
+        "output_column": "order_num"
+      },
+      {
+        "transformer": "set_to_minus_one",
+        "input_columns": ["out_price"],
+        "output_column": "out_price"
+      },
+      {
+        "transformer": "set_to_four",
+        "input_columns": ["id_operation_type"],
+        "output_column": "id_operation_type"
+      },
+      {
+        "transformer": "coalesce_tin",
+        "input_columns": ["tin_pharmacy", "apt_inn_ish_vis_ru"],
+        "output_column": "tin_pharmacy"
+      },
+      {
+        "transformer": "get_id_pharmacy_for_not_russian_network",
+        "input_columns": ["aptadress_ish_vis_ru", "id_client"],
+        "output_column": "id_pharmacy"
+      }
+    ],
+    
+    "validation_rules": [
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_sku"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "tin_pharmacy"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_client"
+      },
+      {
+        "validator": "validate_not_numeric",
+        "column": "id_sku"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_pharmacy"
+      }
+    ]
+  },
+  "ОСТАТКИ": {
+    "output_file_name": "ОСТАТКИ",
+
+    "column_mapping": {
+      "period_ish_vis_ru": "operation_date",
+      "net_id_vis_vis_ru": "id_client",
+      "aptid_vis_ru": "id_pharmacy",
+      "tms_id_vis_ru": "id_sku",
+      "marketa_vis_ru": "id_operation_type",
+      "distrib_filial_code_vis_ru": "id_branch",
+      "type_function_vis_ru": "series",
+      "distrib_vis_ru": "production_date",
+      "distrib_filial_vis_ru": "expiration_date",
+      "aptnet_vis_ru": "prime_cost",
+      "sum_amount_e": "quantity"
+    },
+
+    "additional_columns_for_error_report": [
+      "srcfile1_vis_ru", 
+      "tms_ish_vis_ru", 
+      "distrib_vis_ru",
+      "aptadress_ish_vis_ru"
+    ],
+    
+    "transformation_rules": [
+      {
+        "transformer": "set_to_minus_one",
+        "input_columns": ["id_branch"],
+        "output_column": "id_branch"
+      },
+      {
+        "transformer": "set_to_minus_one",
+        "input_columns": ["series"],
+        "output_column": "series"
+      },
+      {
+        "transformer": "set_to_two",
+        "input_columns": ["id_operation_type"],
+        "output_column": "id_operation_type"
+      },
+      {
+        "transformer": "set_to_zero",
+        "input_columns": ["prime_cost"],
+        "output_column": "prime_cost"
+      },
+      {
+        "transformer": "set_future_date",
+        "input_columns": ["expiration_date"],
+        "output_column": "expiration_date"
+      },
+      {
+        "transformer": "set_2000_date",
+        "input_columns": ["production_date"],
+        "output_column": "production_date"
+      },
+      {
+        "transformer": "get_id_pharmacy_for_not_russian_network",
+        "input_columns": ["aptadress_ish_vis_ru", "id_client"],
+        "output_column": "id_pharmacy"
+      }
+    ],
+    "validation_rules": [
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_sku"
+      },
+      {
+        "validator": "validate_not_numeric",
+        "column": "id_sku"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_pharmacy"
+      }
+    ]
+  },
+  "ОСТАТКИ ДБ": {
+    "output_file_name": "ОСТАТКИ ДБ",
+
+    "column_mapping": {
+      "period_ish_vis_ru": "operation_date",
+      "distrib_code_vis_ru": "id_client",
+      "aptid_vis_ru": "id_pharmacy",
+      "tms_id_vis_ru": "id_sku",
+      "marketa_vis_ru": "id_operation_type",
+      "distrib_filial_code_vis_ru": "id_branch",
+      "type_function_vis_ru": "series",
+      "distrib_vis_ru": "production_date",
+      "distrib_filial_vis_ru": "expiration_date",
+      "aptnet_vis_ru": "prime_cost",
+      "sum_amount_e": "quantity"
+    },
+
+    "additional_columns_for_error_report": [
+      "srcfile1_vis_ru", 
+      "tms_ish_vis_ru", 
+      "distrib_vis_ru",
+      "distrib_filial_ish_vis_ru"
+    ],
+    
+    "transformation_rules": [
+      {
+        "transformer": "set_to_minus_one",
+        "input_columns": ["id_pharmacy"],
+        "output_column": "id_pharmacy"
+      },
+      {
+        "transformer": "set_to_minus_one",
+        "input_columns": ["series"],
+        "output_column": "series"
+      },
+      {
+        "transformer": "set_to_two",
+        "input_columns": ["id_operation_type"],
+        "output_column": "id_operation_type"
+      },
+      {
+        "transformer": "set_to_zero",
+        "input_columns": ["prime_cost"],
+        "output_column": "prime_cost"
+      },
+      {
+        "transformer": "set_future_date",
+        "input_columns": ["expiration_date"],
+        "output_column": "expiration_date"
+      },
+      {
+        "transformer": "set_2000_date",
+        "input_columns": ["production_date"],
+        "output_column": "production_date"
+      }
+      
+    ],
+    "validation_rules": [
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_sku"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_branch"
+      },
+      {
+        "validator": "validate_not_numeric",
+        "column": "id_sku"
+      }
+    ]
+  },
+  "ТРАНЗИТ ДБ": {
+    "output_file_name": "ТРАНЗИТ ДБ",
+
+    "column_mapping": {
+      "period_ish_vis_ru": "operation_date",
+      "distrib_code_vis_ru": "id_client",
+      "aptid_vis_ru": "id_pharmacy",
+      "tms_id_vis_ru": "id_sku",
+      "marketa_vis_ru": "id_operation_type",
+      "distrib_filial_code_vis_ru": "id_branch",
+      "type_function_vis_ru": "series",
+      "distrib_vis_ru": "production_date",
+      "distrib_filial_vis_ru": "expiration_date",
+      "aptnet_vis_ru": "prime_cost",
+      "sum_amount_e": "quantity"
+    },
+
+    "additional_columns_for_error_report": [
+      "srcfile1_vis_ru", 
+      "tms_ish_vis_ru", 
+      "distrib_vis_ru",
+      "distrib_filial_ish_vis_ru"
+    ],
+    
+    "transformation_rules": [
+      {
+        "transformer": "set_to_minus_one",
+        "input_columns": ["id_pharmacy"],
+        "output_column": "id_pharmacy"
+      },
+      {
+        "transformer": "set_to_minus_one",
+        "input_columns": ["series"],
+        "output_column": "series"
+      },
+      {
+        "transformer": "set_to_three",
+        "input_columns": ["id_operation_type"],
+        "output_column": "id_operation_type"
+      },
+      {
+        "transformer": "set_to_zero",
+        "input_columns": ["prime_cost"],
+        "output_column": "prime_cost"
+      },
+      {
+        "transformer": "set_future_date",
+        "input_columns": ["expiration_date"],
+        "output_column": "expiration_date"
+      },
+      {
+        "transformer": "set_2000_date",
+        "input_columns": ["production_date"],
+        "output_column": "production_date"
+      }
+    ],
+    "validation_rules": [
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_sku"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_branch"
+      },
+      {
+        "validator": "validate_not_numeric",
+        "column": "id_sku"
+      }
+    ]
+  },
+  "ПРОДАЖИ ДБ": {
+    "output_file_name": "ПРОДАЖИ ДБ",
+
+    "column_mapping": {
+      "period_ish_vis_ru": "operation_date",
+      "net_id_vis_vis_ru": "id_client_buyer",
+      "aptid_vis_ru": "id_pharmacy",
+      "apt_inn_vis_ru": "tin_buyer",
+      "tms_id_vis_ru": "id_sku",
+      "distrib_code_vis_ru": "id_client",
+      "distrib_filial_code_vis_ru": "id_branch",
+      "marketa_vis_ru": "id_operation_type",
+      "sum_amount_e": "quantity"
+    },
+
+    "additional_columns_for_error_report": [
+      "srcfile1_vis_ru", 
+      "tms_ish_vis_ru", 
+      "distrib_vis_ru",
+      "distrib_filial_ish_vis_ru",
+      "aptadress_ish_vis_ru",
+      "apt_inn_ish_vis_ru"
+    ],
+    
+    "transformation_rules": [
+      {
+        "transformer": "unrecognized_to_10003",
+        "input_columns": ["id_client_buyer"],
+        "output_column": "id_client_buyer"
+      },
+      {
+        "transformer": "set_to_four",
+        "input_columns": ["id_operation_type"],
+        "output_column": "id_operation_type"
+      },
+      {
+        "transformer": "coalesce_tin",
+        "input_columns": ["tin_buyer", "apt_inn_ish_vis_ru"],
+        "output_column": "tin_buyer"
+      },
+      {
+        "transformer": "get_id_pharmacy_for_not_russian_network",
+        "input_columns": ["aptadress_ish_vis_ru", "id_client"],
+        "output_column": "id_pharmacy"
+      }
+    ],
+    "validation_rules": [
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_sku"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "tin_buyer"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_branch"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_pharmacy"
+      },
+      {
+        "validator": "validate_not_numeric",
+        "column": "id_sku"
+      }
+    ]
+  },
+  "ВОЗВРАТЫ ДБ": {
+    "output_file_name": "ВОЗВРАТЫ ДБ",
+
+    "column_mapping": {
+      "period_ish_vis_ru": "operation_date",
+      "net_id_vis_vis_ru": "id_client_buyer",
+      "aptid_vis_ru": "id_pharmacy",
+      "apt_inn_vis_ru": "tin_buyer",
+      "tms_id_vis_ru": "id_sku",
+      "distrib_code_vis_ru": "id_client",
+      "distrib_filial_code_vis_ru": "id_branch",
+      "marketa_vis_ru": "id_operation_type",
+      "sum_amount_e": "quantity"
+    },
+
+    "additional_columns_for_error_report": [
+      "srcfile1_vis_ru", 
+      "tms_ish_vis_ru", 
+      "distrib_vis_ru",
+      "distrib_filial_ish_vis_ru",
+      "aptadress_ish_vis_ru"
+    ],
+    
+    "transformation_rules": [
+      {
+        "transformer": "unrecognized_to_10003",
+        "input_columns": ["id_client_buyer"],
+        "output_column": "id_client_buyer"
+      },
+      {
+        "transformer": "set_to_five",
+        "input_columns": ["id_operation_type"],
+        "output_column": "id_operation_type"
+      },
+      {
+        "transformer": "get_id_pharmacy_for_not_russian_network",
+        "input_columns": ["aptadress_ish_vis_ru", "id_client"],
+        "output_column": "id_pharmacy"
+      }
+    ],
+    "validation_rules": [
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_sku"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "tin_buyer"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_branch"
+      },
+      {
+        "validator": "validate_not_numeric",
+        "column": "id_sku"
+      },
+      {
+        "validator": "validate_in_unrecognized",
+        "column": "id_pharmacy"
+      }
+    ]
+  }
+}
